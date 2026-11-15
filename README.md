@@ -98,10 +98,11 @@ When it needs your input — multiple MusicBrainz matches, missing release info,
 
 The **Library** tab offers two views:
 
-- **Tree view** — hierarchical artist → album → track browser with search, filter by format or health score
+- **Tree view** — hierarchical artist → album → track browser with search and an **Albums below 100% health** filter
 - **Grid view** — visual album browsing with cover art
 
 Click any album to see its tags, health status, and available actions. Selecting an artist or album edits tags in bulk.
+The health filter shows albums whose rounded average track health is below 100%; albums without a health score are excluded. Artist counts and bulk edits still cover the whole artist.
 
 ### Library health
 
