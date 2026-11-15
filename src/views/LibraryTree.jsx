@@ -5,11 +5,7 @@ import { useIsMobile } from '../hooks/useBreakpoint.js'
 import { TAGS, TAG_BY_KEY } from '../data/tags.js'
 import { ID3_GENRES_SORTED } from '../data/id3genres.js'
 import FixDialog from '../components/FixDialog.jsx'
-
-const avgHealth = tracks => {
-  const checked = tracks.filter(t => t.health !== null && t.health !== undefined)
-  return checked.length > 0 ? Math.round(checked.reduce((s, t) => s + t.health, 0) / checked.length) : null
-}
+import { albumsBelowFullHealth, avgHealth } from './libraryHealth.js'
 
 const MIN_PANEL = 220
 const MAX_PANEL = 600
@@ -34,6 +30,8 @@ const LibraryTree = ({ onAddMusic }) => {
   })
   const [filterOpen, setFilterOpen] = React.useState(false)
   const [filterText, setFilterText] = React.useState("")
+  const [unhealthyOnly, setUnhealthyOnly] = React.useState(false)
+  const [filteredOpen, setFilteredOpen] = React.useState({})
   const dragging = React.useRef(false)
 
   // Persist panel width
@@ -168,19 +166,31 @@ const LibraryTree = ({ onAddMusic }) => {
     window.addEventListener("mouseup", onUp)
   }
 
-  const toggle = k => setOpen(o => ({ ...o, [k]: !o[k] }))
+  const isExpanded = (key, kind) => unhealthyOnly
+    ? (filteredOpen[key] ?? (kind === 'artist' || !!open[key]))
+    : !!open[key]
+  const toggle = (key, kind) => {
+    if (unhealthyOnly) {
+      setFilteredOpen(o => ({ ...o, [key]: !isExpanded(key, kind) }))
+    } else {
+      setOpen(o => ({ ...o, [key]: !o[key] }))
+    }
+  }
 
   // Build flat row list from tree data
   const rows = []
-  library.forEach(a => {
-    const allTracks = a.albums.flatMap(al => al.tracks)
+  const shownLibrary = unhealthyOnly ? albumsBelowFullHealth(library) : library
+  const allAlbumsByArtist = unhealthyOnly ? new Map(library.map(a => [a.artist, a.albums])) : null
+  shownLibrary.forEach(a => {
+    const allAlbums = unhealthyOnly ? allAlbumsByArtist.get(a.artist) : a.albums
+    const allTracks = allAlbums.flatMap(al => al.tracks)
     const totalTracks = allTracks.length
-    rows.push({ kind: "artist", artist: a.artist, depth: 0, count: totalTracks, albums: a.albums.length, health: avgHealth(allTracks) })
-    if (open[a.artist]) {
+    rows.push({ kind: "artist", artist: a.artist, depth: 0, count: totalTracks, albums: allAlbums.length, health: avgHealth(allTracks) })
+    if (isExpanded(a.artist, 'artist')) {
       a.albums.forEach(al => {
         rows.push({ kind: "album", artist: a.artist, album: al.name, year: al.year, depth: 1, count: al.tracks.length, genre: al.genre, health: avgHealth(al.tracks), tracks: al.tracks })
         const albumKey = `${a.artist}/${al.name}`
-        if (open[albumKey]) {
+        if (isExpanded(albumKey, 'album')) {
           al.tracks.forEach(t => {
             rows.push({ kind: "track", artist: a.artist, album: al.name, depth: 2, ...t })
           })
@@ -231,6 +241,16 @@ const LibraryTree = ({ onAddMusic }) => {
             >↻</span>
           </div>
 
+          <label style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderBottom: "1px solid var(--line-soft)", fontSize: 12, cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={unhealthyOnly}
+              onChange={e => { setUnhealthyOnly(e.target.checked); setFilteredOpen({}) }}
+              style={{ accentColor: "var(--green)" }}
+            />
+            Albums below 100% health
+          </label>
+
           {filterOpen && (
             <div style={{ padding: "8px 12px", borderBottom: "1px solid var(--line-soft)" }}>
               <input
@@ -253,6 +273,11 @@ const LibraryTree = ({ onAddMusic }) => {
                 No tracks. Click ↻ to scan your library folder.
               </div>
             )}
+            {!loading && library.length > 0 && unhealthyOnly && shownLibrary.length === 0 && (
+              <div style={{ padding: 16, color: "var(--ink-3)", fontSize: 12 }}>
+                No albums below 100% health.
+              </div>
+            )}
             {rows.filter(r => {
               if (!filterText) return true
               const q = filterText.toLowerCase()
@@ -262,7 +287,7 @@ const LibraryTree = ({ onAddMusic }) => {
             }).map((r, i) => {
               const active = isSelected(r)
               const key = r.kind === "artist" ? r.artist : r.kind === "album" ? `${r.artist}/${r.album}` : `${r.artist}/${r.album}/${r.n}`
-              const isOpen = r.kind === "track" ? false : open[key]
+              const isOpen = r.kind === "track" ? false : isExpanded(key, r.kind)
               const onClick = () => setSel(
                 r.kind === "track"
                   ? { kind: "track", artist: r.artist, album: r.album, n: r.n, title: r.title }
@@ -280,7 +305,7 @@ const LibraryTree = ({ onAddMusic }) => {
                   fontWeight: r.kind === "artist" ? 700 : r.kind === "album" ? 600 : 400,
                 }}>
                   {r.kind !== "track" ? (
-                    <span onClick={e => { e.stopPropagation(); toggle(key) }} style={{ width: 22, color: "var(--ink-3)", fontSize: 20, lineHeight: 1, flexShrink: 0, marginRight: -8 }}>{isOpen ? "▾" : "▸"}</span>
+                    <span onClick={e => { e.stopPropagation(); toggle(key, r.kind) }} style={{ width: 22, color: "var(--ink-3)", fontSize: 20, lineHeight: 1, flexShrink: 0, marginRight: -8 }}>{isOpen ? "▾" : "▸"}</span>
                   ) : <span style={{ width: 20, color: "var(--ink-3)", fontSize: 13, flexShrink: 0 }}>♪</span>}
                   {r.kind === "track" && <span className="mono" style={{ color: "var(--ink-3)", fontSize: 11, width: 18, marginRight: -4 }}>{String(r.n).padStart(2, "0")}</span>}
                   <span style={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
