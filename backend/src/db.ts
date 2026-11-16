@@ -315,15 +315,15 @@ const VORBIS_TO_LOGICAL: Record<string, string> = {
   replaygain_track_peak:      'rg_track_peak',
   replaygain_album_gain:      'rg_album_gain',
   replaygain_album_peak:      'rg_album_peak',
-  musicbrainz_recordingid:    'mb_recordingid',
-  musicbrainz_releaseid:      'mb_releaseid',
-  musicbrainz_albumid:        'mb_releaseid',       // Picard legacy alias
-  musicbrainz_artistid:       'mb_artistid',
-  musicbrainz_albumartistid:  'mb_artistid',        // Picard legacy alias
-  musicbrainz_releasegroupid: 'mb_releasegroupid',
-  musicbrainz_albumreleasegroupid: 'mb_releasegroupid',
-  musicbrainz_trackid:        'mb_trackid',
-  musicbrainz_releasetrackid: 'mb_trackid',         // Picard legacy alias
+  musicbrainz_recordingid:    'musicbrainz_recordingid',
+  musicbrainz_releaseid:      'musicbrainz_releaseid',
+  musicbrainz_albumid:        'musicbrainz_releaseid',       // Picard legacy alias
+  musicbrainz_artistid:       'musicbrainz_artistid',
+  musicbrainz_albumartistid:  'musicbrainz_artistid',        // Picard legacy alias
+  musicbrainz_releasegroupid: 'musicbrainz_releasegroupid',
+  musicbrainz_albumreleasegroupid: 'musicbrainz_releasegroupid',
+  musicbrainz_trackid:        'musicbrainz_trackid',
+  musicbrainz_releasetrackid: 'musicbrainz_trackid',         // Picard legacy alias
   acoustid_id:                'acoustid_id',
   acoustid_fingerprint:       'acoustid_fingerprint',
   encoded_by:                 'encoder',

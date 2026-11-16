@@ -324,8 +324,8 @@ describe('db — trackToApiRow', () => {
     }))
     const row = getTrackByPath(db, makeTrack().path)!
     const api = trackToApiRow(row)
-    assert.equal(api.mb_recordingid, 'rec-uuid')
-    assert.equal(api.mb_releaseid, 'rel-uuid')
+    assert.equal(api.musicbrainz_recordingid, 'rec-uuid')
+    assert.equal(api.musicbrainz_releaseid, 'rel-uuid')
     assert.equal(api.rg_track_gain, '-5.00 dB')
     assert.equal(api.rg_album_gain, '-3.00 dB')
     assert.equal(api.acoustid_id, 'acid-uuid')
@@ -348,10 +348,10 @@ describe('db — trackToApiRow', () => {
     assert.ok(typeof api.id === 'number')
   })
 
-  test('musicbrainz_albumid maps to mb_releaseid (Picard legacy alias)', () => {
+  test('musicbrainz_albumid maps to musicbrainz_releaseid (Picard legacy alias)', () => {
     upsertTrack(db, makeTrack({ tags_json: JSON.stringify({ musicbrainz_albumid: 'legacy-uuid' }) }))
     const row = getTrackByPath(db, makeTrack().path)!
     const api = trackToApiRow(row)
-    assert.equal(api.mb_releaseid, 'legacy-uuid')
+    assert.equal(api.musicbrainz_releaseid, 'legacy-uuid')
   })
 })

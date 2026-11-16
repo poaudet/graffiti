@@ -347,7 +347,7 @@ export const TAGS = [
 
   // ── MusicBrainz IDs ───────────────────────────────────────
   {
-    key: "mb_recordingid",
+    key: "musicbrainz_recordingid",
     label: "MB Recording ID",
     group: "musicbrainz",
     gridDefault: false,
@@ -357,7 +357,7 @@ export const TAGS = [
     nativeKey: { vorbis: "MUSICBRAINZ_RECORDINGID", id3: "TXXX:MUSICBRAINZ_RECORDINGID", mp4: "----:com.apple.iTunes:MUSICBRAINZ_RECORDINGID" },
   },
   {
-    key: "mb_releaseid",
+    key: "musicbrainz_releaseid",
     label: "MB Release ID",
     group: "musicbrainz",
     gridDefault: false,
@@ -367,7 +367,7 @@ export const TAGS = [
     nativeKey: { vorbis: "MUSICBRAINZ_RELEASEID", id3: "TXXX:MUSICBRAINZ_RELEASEID", mp4: "----:com.apple.iTunes:MUSICBRAINZ_RELEASEID" },
   },
   {
-    key: "mb_artistid",
+    key: "musicbrainz_artistid",
     label: "MB Artist ID",
     group: "musicbrainz",
     gridDefault: false,
@@ -378,7 +378,7 @@ export const TAGS = [
     nativeKey: { vorbis: "MUSICBRAINZ_ARTISTID", id3: "TXXX:MUSICBRAINZ_ARTISTID", mp4: "----:com.apple.iTunes:MUSICBRAINZ_ARTISTID" },
   },
   {
-    key: "mb_releasegroupid",
+    key: "musicbrainz_releasegroupid",
     label: "MB Release Group ID",
     group: "musicbrainz",
     gridDefault: false,
@@ -388,7 +388,7 @@ export const TAGS = [
     nativeKey: { vorbis: "MUSICBRAINZ_RELEASEGROUPID", id3: "TXXX:MUSICBRAINZ_RELEASEGROUPID", mp4: "----:com.apple.iTunes:MUSICBRAINZ_RELEASEGROUPID" },
   },
   {
-    key: "mb_trackid",
+    key: "musicbrainz_trackid",
     label: "MB Track ID",
     group: "musicbrainz",
     gridDefault: false,

@@ -74,7 +74,7 @@ export async function processFiles(
   const ts = config.tagSettings ?? {}
   const skipAcoustid = ['acoustid_id', 'acoustid_fingerprint']
     .every(k => (ts[k] ?? 'optional') === 'ignored')
-  const skipMusicbrainz = ['mb_recordingid', 'mb_releaseid', 'mb_artistid', 'mb_releasegroupid', 'mb_trackid']
+  const skipMusicbrainz = ['musicbrainz_recordingid', 'musicbrainz_releaseid', 'musicbrainz_artistid', 'musicbrainz_releasegroupid', 'musicbrainz_trackid']
     .every(k => (ts[k] ?? 'optional') === 'ignored')
 
   const acquireAcoustID = makeRateLimiter(400)
